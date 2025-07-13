@@ -7,11 +7,11 @@ import ReactMarkdown from "react-markdown";
 
 type Subject = {
   label: string;
-  score: number;
+  score: number | string;
 };
 
 export default function Home() {
-  const [studentsCount, setStudentsCount] = useState(336);
+  const [studentsCount, setStudentsCount] = useState<number | string>(336);
 
   const [scores, setScores] = useState<Record<string, Subject>>({
     korean: { label: "국어", score: 3 },
@@ -133,7 +133,9 @@ export default function Home() {
 
     Object.keys(rank).forEach((subject) => {
       const convertedScore =
-        (rank[subject as keyof typeof rank].score / studentsCount) * 100;
+        (Number(rank[subject as keyof typeof rank].score) /
+          Number(studentsCount)) *
+        100;
       const gradeEntry = Object.entries(gradeCutoffs).find(
         ([, cutoff]) => convertedScore <= cutoff
       );
@@ -152,7 +154,7 @@ export default function Home() {
 
     const avg = (
       Object.values(newGrades).reduce(
-        (sum, subject) => sum + subject.score,
+        (sum, subject) => sum + Number(subject.score),
         0
       ) / Object.values(newGrades).length
     ).toFixed(3);
@@ -202,22 +204,39 @@ export default function Home() {
                 <input
                   id={`score-${subject}`}
                   type="number"
-                  min={1}
+                  min={0}
                   max={9}
                   step={1}
                   value={scores[subject as keyof typeof scores].score}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setScores({
                       ...scores,
                       [subject]: {
                         ...scores[subject as keyof typeof scores],
-                        score: Math.min(
-                          9,
-                          Math.max(1, parseFloat(e.target.value) || 1)
-                        ),
+                        score:
+                          value === ""
+                            ? ""
+                            : Math.min(
+                                9,
+                                Math.max(0, parseInt(value, 10) || 0)
+                              ),
                       },
-                    })
-                  }
+                    });
+                  }}
+                  onBlur={() => {
+                    const currentScore =
+                      scores[subject as keyof typeof scores];
+                    if (currentScore.score === "") {
+                      setScores({
+                        ...scores,
+                        [subject]: {
+                          ...currentScore,
+                          score: 0,
+                        },
+                      });
+                    }
+                  }}
                   className="w-full rounded-md border border-indigo-300 px-3 py-2 text-indigo-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
               </div>
@@ -229,7 +248,7 @@ export default function Home() {
             <span>
               {(
                 Object.values(scores).reduce(
-                  (sum, subject) => sum + subject.score,
+                  (sum, subject) => sum + Number(subject.score),
                   0
                 ) / Object.values(scores).length
               ).toFixed(3)}
@@ -254,11 +273,21 @@ export default function Home() {
               <input
                 id="students-count"
                 type="number"
-                min={1}
+                min={0}
                 value={studentsCount}
-                onChange={(e) =>
-                  setStudentsCount(Math.max(1, parseInt(e.target.value) || 1))
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setStudentsCount(
+                    value === ""
+                      ? ""
+                      : Math.max(0, parseInt(e.target.value, 10) || 0)
+                  );
+                }}
+                onBlur={() => {
+                  if (studentsCount === "") {
+                    setStudentsCount(0);
+                  }
+                }}
                 className="w-full rounded-md border border-indigo-300 px-3 py-2 text-indigo-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               />
             </div>
@@ -277,21 +306,37 @@ export default function Home() {
                   step={1}
                   id={`rank-${subject}`}
                   type="number"
-                  min={1}
-                  max={studentsCount}
+                  min={0}
+                  max={Number(studentsCount)}
                   value={rank[subject as keyof typeof rank].score}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setRank({
                       ...rank,
                       [subject]: {
                         ...rank[subject as keyof typeof rank],
-                        score: Math.min(
-                          studentsCount,
-                          Math.max(1, parseInt(e.target.value, 10) || 1)
-                        ),
+                        score:
+                          value === ""
+                            ? ""
+                            : Math.min(
+                                Number(studentsCount),
+                                Math.max(0, parseInt(value, 10) || 0)
+                              ),
                       },
-                    })
-                  }
+                    });
+                  }}
+                  onBlur={() => {
+                    const currentRank = rank[subject as keyof typeof rank];
+                    if (currentRank.score === "") {
+                      setRank({
+                        ...rank,
+                        [subject]: {
+                          ...currentRank,
+                          score: 0,
+                        },
+                      });
+                    }
+                  }}
                   className="w-full rounded-md border border-indigo-300 px-3 py-2 text-indigo-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
               </div>
