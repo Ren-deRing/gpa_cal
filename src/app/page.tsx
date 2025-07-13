@@ -188,9 +188,12 @@ export default function Home() {
       <section className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* 내신 성적 계산기 */}
         <div className="bg-white shadow-md rounded-lg p-6 flex flex-col">
-          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200 pb-2">
+          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             내신 성적 계산기
           </h2>
+          <p className="text-center text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 등급을 입력하세요.
+          </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
             {Object.keys(scores).map((subject) => (
@@ -261,9 +264,12 @@ export default function Home() {
 
         {/* 9등급제 내신 변환기 */}
         <div className="bg-white shadow-md rounded-lg p-6 flex flex-col">
-          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200 pb-2">
+          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             9등급제 내신 변환기
           </h2>
+          <p className="text-center text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 전교 석차를 입력하세요.
+          </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
             <div className="flex items-center gap-3">
