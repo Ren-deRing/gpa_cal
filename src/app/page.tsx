@@ -135,7 +135,7 @@ export default function Home() {
       const convertedScore =
         (rank[subject as keyof typeof rank].score / studentsCount) * 100;
       const gradeEntry = Object.entries(gradeCutoffs).find(
-        ([_, cutoff]) => convertedScore <= cutoff // Changed _key to _
+        ([, cutoff]) => convertedScore <= cutoff
       );
 
       if (gradeEntry) {
