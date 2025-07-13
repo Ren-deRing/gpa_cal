@@ -191,8 +191,8 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             내신 성적 계산기
           </h2>
-          <p className="text-center text-sm text-gray-800 mt-2 pb-2">
-            각 과목의 등급을 입력하세요.
+          <p className="text-left text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 등급을 입력하세요
           </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
@@ -267,8 +267,8 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             9등급제 내신 변환기
           </h2>
-          <p className="text-center text-sm text-gray-800 mt-2 pb-2">
-            각 과목의 전교 석차를 입력하세요.
+          <p className="text-left text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 전교 석차를 입력하세요
           </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
@@ -386,7 +386,7 @@ export default function Home() {
 
         {Object.keys(grade).length === 0 && !isLoading && (
           <p className="text-center text-sm text-gray-800 mt-2">
-            9등급제 내신 변환을 먼저 실행하십시오.
+            9등급제 내신 변환을 먼저 실행하세요
           </p>
         )}
 
