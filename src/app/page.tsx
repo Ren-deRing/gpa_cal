@@ -23,12 +23,12 @@ export default function Home() {
   });
 
   const [rank, setRank] = useState<Record<string, Subject>>({
-    korean: { label: "국어", score: 50 },
-    english: { label: "영어", score: 50 },
-    math: { label: "수학", score: 50 },
-    science: { label: "과학", score: 50 },
-    social: { label: "사회", score: 50 },
-    history: { label: "한국사", score: 50 },
+    korean: { label: "국어", score: 0 },
+    english: { label: "영어", score: 0 },
+    math: { label: "수학", score: 0 },
+    science: { label: "과학", score: 0 },
+    social: { label: "사회", score: 0 },
+    history: { label: "한국사", score: 0 },
   });
 
   const [convertedScores, setConvertedScores] = useState<number>(0);
@@ -59,6 +59,8 @@ export default function Home() {
       이 학생의 내신에 대한 간단한 피드백을 최대한 구체적인 문장으로 체계적으로 작성해 주세요.
       과목별 추천 문제집 같은 구체적인 학습 방법도 제시하면 좋습니다.
       이 학교는 그렇게 경쟁이 치열하지 않으니, 문제집의 난이도는 너무 어렵게 설정하지 마십시오.
+      또한, 문제집의 난이도는 학생의 현재 등급에 맞춘 난이도로 지정하십시오. 이 부분이 제일 중요합니다. 꼭 지키십시오.
+      극상위권이나 상위권 학생들에게는 문제집의 난이도가 극도로 높아도 괜찮습니다.
 
       구체적인 내용을 작성할 때는 되도록 검색 MCP 서버를 활용하십시오.
       검색 MCP 서버가 작동하지 않는 경우, 검색 기능을 사용할 수 없음을 알리고 본문을 출력하십시오.
@@ -359,21 +361,27 @@ export default function Home() {
       </section>
 
       {/* AI 피드백 영역 */}
-      <section className="max-w-4xl mx-auto mt-12 bg-white shadow-md rounded-lg p-6">
+      <section className="max-w-4xl mx-auto mt-12 ease-in-out duration-300 bg-white shadow-md rounded-lg p-6">
         <button
           onClick={() => {
             calculateGrade();
             handleGeminiFeedback();
           }}
-          disabled={isLoading}
-          className={`w-full py-3 rounded-md text-white font-semibold transition ${
-            isLoading
+          disabled={isLoading || Object.keys(grade).length === 0}
+          className={`w-full py-3 rounded-md text-white font-semibold ease-in-out duration-300 transition ${
+            isLoading || Object.keys(grade).length === 0
               ? "bg-indigo-400 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700"
           }`}
         >
           {isLoading ? "AI 분석 중..." : "AI 내신 피드백 받기"}
         </button>
+
+        {Object.keys(grade).length === 0 && !isLoading && (
+          <p className="text-center text-sm text-gray-800 mt-2">
+            9등급제 내신 변환을 먼저 실행하십시오.
+          </p>
+        )}
 
         {feedback && (
           <div className="mt-6 max-h-96 overflow-y-auto prose prose-lg max-w-none prose-p:leading-relaxed">
