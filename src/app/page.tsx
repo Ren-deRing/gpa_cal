@@ -14,12 +14,12 @@ export default function Home() {
   const [studentsCount, setStudentsCount] = useState(336);
 
   const [scores, setScores] = useState<Record<string, Subject>>({
-    korean: { label: "국어", score: 2 },
-    english: { label: "영어", score: 2 },
-    math: { label: "수학", score: 2 },
-    science: { label: "과학", score: 2 },
-    social: { label: "사회", score: 2 },
-    history: { label: "한국사", score: 2 },
+    korean: { label: "국어", score: 3 },
+    english: { label: "영어", score: 3 },
+    math: { label: "수학", score: 3 },
+    science: { label: "과학", score: 3 },
+    social: { label: "사회", score: 3 },
+    history: { label: "한국사", score: 3 },
   });
 
   const [rank, setRank] = useState<Record<string, Subject>>({
@@ -48,9 +48,13 @@ export default function Home() {
       -- 이 아래 프롬포트는 시스템 프롬포트입니다. 답변할 때 이 프롬포트를 적극 활용하십시오. --
 
       이 학생의 내신 성적은 다음과 같습니다:
-      ${Object.entries(grade).map(([subject, { score }]) => `${subject}: ${score}등급`).join(", ")}
+      ${Object.entries(grade)
+        .map(([subject, { score }]) => `${subject}: ${score}등급`)
+        .join(", ")}
       평균 등급은 ${convertedScores}입니다.
-      이 학생의 석차는 다음과 같습니다: ${Object.entries(rank).map(([subject, { score }]) => `${subject}: ${score}등`).join(", ")}
+      이 학생의 석차는 다음과 같습니다: ${Object.entries(rank)
+        .map(([subject, { score }]) => `${subject}: ${score}등`)
+        .join(", ")}
 
       이 학생의 내신에 대한 간단한 피드백을 최대한 구체적인 문장으로 체계적으로 작성해 주세요.
       과목별 추천 문제집 같은 구체적인 학습 방법도 제시하면 좋습니다.
@@ -64,7 +68,7 @@ export default function Home() {
       하지만 학생에 대한 정보나 학교에 관한 제공해드린 정보에 관한 내용은 언급해도 좋습니다.
 
       대상 학생이 재학 중인 학교의 총 정원 수는 ${studentsCount}명입니다.
-      또한, 학생의 학년은 고등학교 1학년입니다.
+      또한, 학생의 학년은 고등학교 1학년이며, 이 성적은 1학년 1학기 성적입니다.
       학생의 교육과정은 2022년 개정 교육과정이며, 본래 2022 교육과정의 등급 기준은 5등급제이지만
       제공된 등급의 기준은 변환된 9등급제입니다.
 
@@ -105,10 +109,11 @@ export default function Home() {
             const jsonStr = line.slice(6);
             try {
               const data = JSON.parse(jsonStr);
-              const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+              const text =
+                data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
               setFeedback((prev) => prev + text);
-            } catch (e) {
-              console.error("Invalid JSON:", jsonStr);
+            } catch (e: unknown) { // Changed to unknown
+              console.error("Invalid JSON:", jsonStr, e); 
             }
           }
         }
@@ -128,10 +133,9 @@ export default function Home() {
 
     Object.keys(rank).forEach((subject) => {
       const convertedScore =
-        (rank[subject as keyof typeof rank].score / studentsCount) *
-        100;
+        (rank[subject as keyof typeof rank].score / studentsCount) * 100;
       const gradeEntry = Object.entries(gradeCutoffs).find(
-        ([_, cutoff]) => convertedScore <= cutoff
+        ([_, cutoff]) => convertedScore <= cutoff // Changed _key to _
       );
 
       if (gradeEntry) {
@@ -154,7 +158,7 @@ export default function Home() {
     ).toFixed(3);
 
     setConvertedScores(Number(avg));
-  }
+  };
 
   const gradeCutoffs = {
     1: 4,
@@ -185,7 +189,10 @@ export default function Home() {
 
           <div className="space-y-4 flex-1 overflow-auto">
             {Object.keys(scores).map((subject) => (
-              <div key={subject} className="flex items-center gap-3 flex-nowrap">
+              <div
+                key={subject}
+                className="flex items-center gap-3 flex-nowrap"
+              >
                 <label
                   htmlFor={`score-${subject}`}
                   className="w-20 font-medium text-indigo-700"
@@ -197,7 +204,7 @@ export default function Home() {
                   type="number"
                   min={1}
                   max={9}
-                  step={0.01}
+                  step={1}
                   value={scores[subject as keyof typeof scores].score}
                   onChange={(e) =>
                     setScores({
@@ -237,8 +244,29 @@ export default function Home() {
           </h2>
 
           <div className="space-y-4 flex-1 overflow-auto">
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="students-count"
+                className="w-20 font-medium text-indigo-700"
+              >
+                학생 수
+              </label>
+              <input
+                id="students-count"
+                type="number"
+                min={1}
+                value={studentsCount}
+                onChange={(e) =>
+                  setStudentsCount(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                className="w-full rounded-md border border-indigo-300 px-3 py-2 text-indigo-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+              />
+            </div>
             {Object.keys(rank).map((subject) => (
-              <div key={subject} className="flex items-center gap-3 flex-nowrap">
+              <div
+                key={subject}
+                className="flex items-center gap-3 flex-nowrap"
+              >
                 <label
                   htmlFor={`rank-${subject}`}
                   className="w-20 font-medium text-indigo-700"
@@ -246,6 +274,7 @@ export default function Home() {
                   {rank[subject as keyof typeof rank].label}
                 </label>
                 <input
+                  step={1}
                   id={`rank-${subject}`}
                   type="number"
                   min={1}
@@ -287,7 +316,10 @@ export default function Home() {
       {/* AI 피드백 영역 */}
       <section className="max-w-4xl mx-auto mt-12 bg-white shadow-md rounded-lg p-6">
         <button
-          onClick={() => {calculateGrade(); handleGeminiFeedback();}}
+          onClick={() => {
+            calculateGrade();
+            handleGeminiFeedback();
+          }}
           disabled={isLoading}
           className={`w-full py-3 rounded-md text-white font-semibold transition ${
             isLoading
