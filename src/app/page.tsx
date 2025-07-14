@@ -367,7 +367,7 @@ export default function Home() {
             </button>
 
             <div className="text-center text-indigo-900 font-semibold text-lg">
-              변환 등급: {convertedScores}
+              변환 등급 평균: {convertedScores.toFixed(3)}
             </div>
 
             {Object.keys(grade).length > 0 && (
@@ -418,7 +418,9 @@ export default function Home() {
         )}
       </section>
       <footer className="mt-12 text-center text-xs text-gray-500">
-        Copyright (c) 2025 원종현 - Licensed under the MIT License.
+        Copyright (c) 2025 원종현 - Licensed under the MIT License.<br /><br />
+        AI 피드백은 실수를 할 수 있습니다. 참고용으로만 사용하십시오.<br />
+        이 계산기는 교육 참고용으로 제작되었으며, 실제와 다른 부정확한 값을 출력할 수 있습니다.
       </footer>
     </main>
   );
