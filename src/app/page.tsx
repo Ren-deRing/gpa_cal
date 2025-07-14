@@ -191,6 +191,9 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             내신 성적 계산기
           </h2>
+          <p className="text-right text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 등급을 입력하세요
+          </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
             {Object.keys(scores).map((subject) => (
@@ -265,9 +268,12 @@ export default function Home() {
 
         {/* 9등급제 내신 변환기 */}
         <div className="bg-white shadow-md rounded-lg p-6 flex flex-col">
-          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200 pb-2">
+          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             9등급제 내신 변환기
           </h2>
+          <p className="text-right text-sm text-gray-800 mt-2 pb-2">
+            각 과목의 전교 석차를 입력하세요
+          </p>
 
           <div className="space-y-4 flex-1 overflow-auto">
             <div className="flex items-center gap-3">
@@ -400,7 +406,7 @@ export default function Home() {
 
         {Object.keys(grade).length === 0 && !isLoading && (
           <p className="text-center text-sm text-gray-800 mt-2">
-            9등급제 내신 변환을 먼저 실행하십시오.
+            9등급제 내신 변환을 먼저 실행하세요
           </p>
         )}
 
@@ -411,6 +417,9 @@ export default function Home() {
           </div>
         )}
       </section>
+      <footer className="mt-12 text-center text-xs text-gray-500">
+        Copyright (c) 2025 원종현 - Licensed under the MIT License.
+      </footer>
     </main>
   );
 }
