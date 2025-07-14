@@ -14,21 +14,21 @@ export default function Home() {
   const [studentsCount, setStudentsCount] = useState<number | string>(336);
 
   const [scores, setScores] = useState<Record<string, Subject>>({
-    korean: { label: "국어", score: 3 },
-    english: { label: "영어", score: 3 },
-    math: { label: "수학", score: 3 },
-    science: { label: "과학", score: 3 },
-    social: { label: "사회", score: 3 },
-    history: { label: "한국사", score: 3 },
+    korean: { label: "국어", score: "" },
+    english: { label: "영어", score: "" },
+    math: { label: "수학", score: "" },
+    science: { label: "과학", score: "" },
+    social: { label: "사회", score: "" },
+    history: { label: "한국사", score: "" },
   });
 
   const [rank, setRank] = useState<Record<string, Subject>>({
-    korean: { label: "국어", score: 0 },
-    english: { label: "영어", score: 0 },
-    math: { label: "수학", score: 0 },
-    science: { label: "과학", score: 0 },
-    social: { label: "사회", score: 0 },
-    history: { label: "한국사", score: 0 },
+    korean: { label: "국어", score: "" },
+    english: { label: "영어", score: "" },
+    math: { label: "수학", score: "" },
+    science: { label: "과학", score: "" },
+    social: { label: "사회", score: "" },
+    history: { label: "한국사", score: "" },
   });
 
   const [convertedScores, setConvertedScores] = useState<number>(0);
@@ -188,7 +188,7 @@ export default function Home() {
       <section className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* 내신 성적 계산기 */}
         <div className="bg-white shadow-md rounded-lg p-6 flex flex-col">
-          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200 pb-2">
+          <h2 className="text-2xl font-semibold mb-5 text-indigo-800 border-b border-indigo-200">
             내신 성적 계산기
           </h2>
 
@@ -235,7 +235,7 @@ export default function Home() {
                         ...scores,
                         [subject]: {
                           ...currentScore,
-                          score: 0,
+                          score: "",
                         },
                       });
                     }
@@ -249,12 +249,16 @@ export default function Home() {
           <div className="mt-6 border-t pt-4 flex justify-between items-center text-indigo-900 font-semibold text-lg">
             <span>평균 등급: </span>
             <span>
-              {(
-                Object.values(scores).reduce(
+              {(() => {
+                const total = Object.values(scores).reduce(
                   (sum, subject) => sum + Number(subject.score),
                   0
-                ) / Object.values(scores).length
-              ).toFixed(3)}
+                );
+                const count = Object.values(scores).filter(
+                  (s) => s.score !== ""
+                ).length;
+                return count > 0 ? (total / count).toFixed(3) : "0.000";
+              })()}
             </span>
           </div>
         </div>
@@ -288,7 +292,7 @@ export default function Home() {
                 }}
                 onBlur={() => {
                   if (studentsCount === "") {
-                    setStudentsCount(0);
+                    setStudentsCount("");
                   }
                 }}
                 className="w-full rounded-md border border-indigo-300 px-3 py-2 text-indigo-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
@@ -335,7 +339,7 @@ export default function Home() {
                         ...rank,
                         [subject]: {
                           ...currentRank,
-                          score: 0,
+                          score: "",
                         },
                       });
                     }
@@ -348,6 +352,8 @@ export default function Home() {
 
           <div className="mt-6 flex flex-col gap-4">
             <button
+              disabled={studentsCount == "" ||
+              Object.values(rank).every((r) => r.score == "")}
               onClick={calculateGrade}
               className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-bold py-3 rounded-md transition"
             >
@@ -357,6 +363,20 @@ export default function Home() {
             <div className="text-center text-indigo-900 font-semibold text-lg">
               변환 등급: {convertedScores}
             </div>
+
+            {Object.keys(grade).length > 0 && (
+              <div className="mt-4 space-y-2">
+                {Object.entries(grade).map(([subject, { label, score }]) => (
+                  <div
+                    key={subject}
+                    className="flex justify-between items-center bg-indigo-50 p-2 rounded-md"
+                  >
+                    <span className="font-medium text-indigo-800">{label}</span>
+                    <span className="font-bold text-indigo-900">{score} 등급</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
