@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "내신성적계산기",
-  description: "Made by @Ren-deRing (Github), WON JONGHYUN",
+  description: "Made by 10113 원종현 - @Ren-deRing (Github), WON JONGHYUN",
 };
 
 export default function RootLayout({
